@@ -1,4 +1,4 @@
 # WahsKeyClubSite
 The website for Western Albemarle High School (WAHS)'s Key Club
 
-A link and more details will be provided soon.
+It is currently hosted by Heroku. More details will be provided when the website is developed to a usable state.
