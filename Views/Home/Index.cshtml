@@ -3,14 +3,22 @@
     ViewData["Header"] = "Welcome to the WAHS Key Club website!";
 }
 
-<body>
+<body class="container">
 
-<div class="column">
-    <h2>About Our Club</h2>
-    <img src="~/images/keyclubicon.png" alt="Key Club International Icon" class="img-wrap-left"/>
-    <p>We are the Western Albemarle High School Key Club, our high school's division of <a href="https://www.keyclub.org/">Key Club International</a>. Since our beginning in 2013, we have grown into a club of around 50 members dedicated to serving the Crozet and Charlottesville communities through fundraisers, elementary school outreach events, food pantries, and more. To see announcements and photos about recent community service projects, check out our Instagram feed below.</p>
+<div class="row">
+    <div class="column">
+        <h2>About Our Club</h2>
+        <img src="~/images/keyclubicon.png" alt="Key Club International Icon" class="img-wrap-left"/>
+        <p>We are the Western Albemarle High School Key Club, our high school's division of <a href="https://www.keyclub.org/">Key Club International</a>. Since our beginning in 2013, we have grown into a club of around 50 members dedicated to serving the Crozet and Charlottesville communities through fundraisers, elementary school outreach events, food pantries, and more. To see announcements and photos about recent community service projects, check out our Instagram feed below.</p>
+        @* TODO: Confirm creation date and club member estimate, check paragraph with president. *@
+    </div>
+</div>
 
-@* TODO: Embed Instagram feed (need credentials), confirm creation date and club member estimate, check paragraph with president. *@
+<div class="row">
+    <div class="column">
+        <h2>Instagram Feed (@@wahskeyclub)</h2>
+        <!-- LightWidget WIDGET --><script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script><iframe src="//lightwidget.com/widgets/8af171ded5c051938579dfd3b290fdc1.html" scrolling="yes" allowtransparency="true" class="lightwidget-widget" style="width:100%;border:0;overflow:hidden;"></iframe>
+    </div>
 </div>
 
 </body>
