@@ -21,13 +21,14 @@ hr {
 
 .img-wrap-left {
     float: left;
-    margin: 10px;
+    margin: 15px;
 }
 
 .column {
     float: left;
     width: 50%;
-    padding-right: 15px
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
 /* Clear floats after the columns */
