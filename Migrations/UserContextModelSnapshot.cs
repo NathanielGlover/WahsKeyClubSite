@@ -20,9 +20,9 @@ namespace WahsKeyClubSite.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CreationDate");
-
                     b.Property<int>("AccountType");
+
+                    b.Property<string>("CreationDate");
 
                     b.Property<string>("Email")
                         .IsRequired();

@@ -25,7 +25,9 @@ namespace WahsKeyClubSite.Models
         public int ID { get; set; }
         
         [DataType(DataType.DateTime)]
-        public DateTime CreationDate { get; set; }
+        public string CreationDate { get; set; }
+
+        public AccountType AccountType { get; set; } = AccountType.Member;
 
         [Required(ErrorMessage = "Email address is required.")]
         [DataType(DataType.EmailAddress)]
@@ -44,12 +46,10 @@ namespace WahsKeyClubSite.Models
         [Required(ErrorMessage = "Grade is required.")]
         public Grade Grade { get; set; }
 
-        public AccountType AccountType { get; set; } = AccountType.Member;
+        public bool IsMember() => !IsAdmin();
 
-        public bool IsMember => !IsAdmin;
+        public bool IsAdmin() => AccountType == AccountType.Admin || AccountType == AccountType.Developer;
 
-        public bool IsAdmin => AccountType == AccountType.Admin || AccountType == AccountType.Developer;
-
-        public bool IsDeveloper => AccountType == AccountType.Developer;
+        public bool IsDeveloper() => AccountType == AccountType.Developer;
     }
 }

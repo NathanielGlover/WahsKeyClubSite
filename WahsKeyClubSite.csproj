@@ -21,5 +21,6 @@
       <_ContentIncludedByDefault Remove="Views\Users\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Users\SignIn.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Users\StandardCreate.cshtml" />
+      <_ContentIncludedByDefault Remove="wwwroot\token.json\Google.Apis.Auth.OAuth2.Responses.TokenResponse-user" />
     </ItemGroup>
 </Project>

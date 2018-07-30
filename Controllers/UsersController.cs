@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -36,10 +37,8 @@ namespace WahsKeyClubSite.Controllers
             return View(user);
         }
 
-        public IActionResult SignIn() => View();
+        public IActionResult CreateMember() => View();        
 
-        public IActionResult CreateMember() => View();
-        
         // GET: Users/Create
         public IActionResult Create() => View();
 
@@ -48,16 +47,66 @@ namespace WahsKeyClubSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email,Password,FirstName,LastName,Grade,AccountType")] User user)
+        public async Task<IActionResult> Create([Bind("ID,CreationDate,AccountType,Email,Password,FirstName,LastName,Grade")] User user)
         {
+            user.CreationDate = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             if (ModelState.IsValid)
             {
-                user.CreationDate = DateTime.Now;
                 context.Add(user);
                 await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
+            return View(user);
+        }
+
+        // GET: Users/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await context.User.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        // POST: Users/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,CreationDate,AccountType,Email,Password,FirstName,LastName,Grade")] User user)
+        {
+            if (id != user.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    context.Update(user);
+                    await context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(user.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return View(user);
         }
 
@@ -69,7 +118,8 @@ namespace WahsKeyClubSite.Controllers
                 return NotFound();
             }
 
-            var user = await context.User.FirstOrDefaultAsync(m => m.ID == id);
+            var user = await context.User
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (user == null)
             {
                 return NotFound();

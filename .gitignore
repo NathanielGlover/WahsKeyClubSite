@@ -37,6 +37,9 @@ out/
 obj/
 bin/
 
+# Security
+Users.db
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 

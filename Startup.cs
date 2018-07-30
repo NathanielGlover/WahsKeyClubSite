@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,22 @@ namespace WahsKeyClubSite
         {
             services.AddMvc();
             
-            services.AddDbContext<UserContext>(options => options.UseSqlite("Data Source=Users.db"));
+            var optionsBuilder = new DbContextOptionsBuilder<UserContext>();
+            optionsBuilder.UseSqlite("Data Source=http://s3.amazonaws.com/wahskeyclubsite/Users.db");
+            using(var context = new UserContext(optionsBuilder.Options))
+            {
+                try
+                {
+                    context.Database.OpenConnection();
+                }
+                catch(Exception e)
+                {
+                    services.AddDbContext<UserContext>(options => options.UseSqlite("Data Source=Users.db"));
+                    return;
+                }
+                
+                services.AddDbContext<UserContext>(options => options.UseSqlite("Data Source=http://s3.amazonaws.com/wahskeyclubsite/Users.db"));
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

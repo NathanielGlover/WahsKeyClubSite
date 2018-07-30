@@ -8,7 +8,7 @@ using WahsKeyClubSite.Models;
 namespace WahsKeyClubSite.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20180730033923_InitialCreate")]
+    [Migration("20180730180210_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,8 @@ namespace WahsKeyClubSite.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccountType");
+
+                    b.Property<string>("CreationDate");
 
                     b.Property<string>("Email")
                         .IsRequired();

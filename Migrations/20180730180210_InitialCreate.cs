@@ -12,12 +12,13 @@ namespace WahsKeyClubSite.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CreationDate = table.Column<string>(nullable: true),
+                    AccountType = table.Column<int>(nullable: false),
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
-                    Grade = table.Column<int>(nullable: false),
-                    AccountType = table.Column<int>(nullable: false)
+                    Grade = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
