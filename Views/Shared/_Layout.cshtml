@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using WahsKeyClubSite.Controllers
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
@@ -33,6 +34,9 @@
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
+                @* <li> *@
+                    @* <a asp-area="" asp-controller="Users" asp-action="SignIn">@(HomeController.SignedIn ? "My Account" : "Sign In")</a> *@
+                @* </li> *@
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Calendar">Calendar</a>
                 </li>
@@ -43,6 +47,7 @@
         </div>
     </div>
 </nav>
+
 <div class="container body-content">
     <h1 style="text-align: center">@ViewData["Title"]</h1>
     <h4 style="text-align: center">@ViewData["Header"]</h4>
