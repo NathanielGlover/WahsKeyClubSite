@@ -18,7 +18,7 @@ namespace WahsKeyClubSite.Models
         Admin,
         Developer
     }
-
+    
     public class User
     {
         // ReSharper disable once InconsistentNaming

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -18,23 +19,27 @@ namespace WahsKeyClubSite
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
-            var optionsBuilder = new DbContextOptionsBuilder<UserContext>();
-            optionsBuilder.UseSqlite("Data Source=http://s3.amazonaws.com/wahskeyclubsite/Users.db");
-            using(var context = new UserContext(optionsBuilder.Options))
+
+            string url = Configuration["DATABASE_URL"];
+
+            if(url == null) //If run in local environment
             {
-                try
-                {
-                    context.Database.OpenConnection();
-                }
-                catch(Exception e)
-                {
-                    services.AddDbContext<UserContext>(options => options.UseSqlite("Data Source=Users.db"));
-                    return;
-                }
-                
-                services.AddDbContext<UserContext>(options => options.UseSqlite("Data Source=http://s3.amazonaws.com/wahskeyclubsite/Users.db"));
+                var p = new Process {StartInfo = {UseShellExecute = false, RedirectStandardOutput = true, FileName = "/bin/bash"}};
+                p.StartInfo.Arguments = "heroku config:get -a wahskeyclub DATABASE_URL";
+                p.Start();
+                url = p.StandardOutput.ReadToEnd();
+                Console.WriteLine(url);
+                p.WaitForExit();
             }
+
+            var builder = new PostgreSqlConnectionStringBuilder(url)
+            {
+                Pooling = true,
+                TrustServerCertificate = true,
+                SslMode = SslMode.Require
+            };            
+
+            services.AddEntityFrameworkNpgsql().AddDbContext<UserContext>(options => options.UseNpgsql(builder.ConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

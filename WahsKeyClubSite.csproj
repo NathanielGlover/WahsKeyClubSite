@@ -9,18 +9,9 @@
         <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.0" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.1.1" />
     </ItemGroup>
     <ItemGroup>
         <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
-    </ItemGroup>
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Users\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Users\Delete.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Users\Details.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Users\Edit.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Users\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Users\SignIn.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Users\StandardCreate.cshtml" />
-      <_ContentIncludedByDefault Remove="wwwroot\token.json\Google.Apis.Auth.OAuth2.Responses.TokenResponse-user" />
     </ItemGroup>
 </Project>
