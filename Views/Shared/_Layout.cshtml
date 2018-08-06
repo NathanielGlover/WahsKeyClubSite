@@ -33,9 +33,6 @@
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
-                @* <li> *@
-                    @* <a asp-area="" asp-controller="Users" asp-action="SignIn">@(HomeController.SignedIn ? "My Account" : "Sign In")</a> *@
-                @* </li> *@
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Calendar">Calendar</a>
                 </li>
@@ -43,6 +40,7 @@
                     <a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a>
                 </li>
             </ul>
+            <partial name="_LoginPartial"/>
         </div>
     </div>
 </nav>

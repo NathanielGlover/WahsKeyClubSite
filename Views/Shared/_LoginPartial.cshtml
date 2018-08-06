@@ -1,0 +1,43 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if(SignInManager.IsSignedIn(User))
+{
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new {area = ""})" method="post" id="logoutForm" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+@*             @{ *@
+@*                 if(UserManager.GetUserAsync(User).Result.IsAdmin()) *@
+@*                 { *@
+@*                     <li> *@
+@*                         <a asp-area="Identity" asp-page="/Admin/Logs">View Hour Logs</a> *@
+@*                     </li> *@
+@*                     <li> *@
+@*                         <a asp-area="Identity" asp-page="/Admin/Users">Manage Users</a> *@
+@*                     </li> *@
+@*                 } *@
+@*             } *@
+@*             <li> *@
+@*                 <a asp-area="Identity" asp-page="/Account/Hours">Service Hours</a> *@
+@*             </li> *@
+            <li>
+                <a asp-area="Identity" asp-page="/Account/Manage/Index">My Account</a>
+            </li>
+            <li>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li>
+            <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    </ul>
+}

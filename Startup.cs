@@ -2,9 +2,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WahsKeyClubSite.Areas.Identity.Data;
 using WahsKeyClubSite.Models;
 
 namespace WahsKeyClubSite
@@ -18,6 +21,10 @@ namespace WahsKeyClubSite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IEmailSender, GoogleEmailSender>();
+            services.AddSingleton<IEmailSender, GoogleEmailSender>();
+            services.AddScoped<IEmailSender, GoogleEmailSender>();
+            
             services.AddMvc();
 
             string url = Configuration["DATABASE_URL"];
@@ -39,7 +46,7 @@ namespace WahsKeyClubSite
                 SslMode = SslMode.Require
             };            
 
-            services.AddEntityFrameworkNpgsql().AddDbContext<UserContext>(options => options.UseNpgsql(builder.ConnectionString));
+//            services.AddEntityFrameworkNpgsql().AddDbContext<UserContext>(options => options.UseNpgsql(builder.ConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +62,8 @@ namespace WahsKeyClubSite
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
