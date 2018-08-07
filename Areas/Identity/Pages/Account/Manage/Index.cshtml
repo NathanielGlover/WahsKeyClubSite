@@ -1,5 +1,6 @@
 @page
 @model IndexModel
+@inject UserManager<User> UserManager
 @{
     ViewData["Title"] = "Edit Profile";
     ViewData["Header"] = "Here you can change your name and email address. Your grade will be updated each year.";
@@ -14,27 +15,44 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Input.Name"></label>
-                <input asp-for="Input.Name" class="form-control" />
+                <input asp-for="Input.Name" class="form-control"/>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Email"></label>
-                @if (Model.IsEmailConfirmed)
+                @if(Model.IsEmailConfirmed)
                 {
                     <div class="input-group">
-                        <input asp-for="Input.Email" class="form-control" />
-                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                        <input asp-for="Input.Email" class="form-control"/>
+                        <span class="input-group-addon" aria-hidden="true">
+                            <span class="glyphicon glyphicon-ok text-success"></span>
+                        </span>
                     </div>
                 }
                 else
                 {
-                    <input asp-for="Input.Email" class="form-control" />
+                    <input asp-for="Input.Email" class="form-control"/>
                     <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
                 }
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
+            <div class="form-group @(!UserManager.GetUserAsync(User).Result.IsAdmin() ? "hidden" : "")">
+                <label asp-for="Input.AccountType" class="control-label">Account Type</label>
+                @{
+                    var list = Html.GetEnumSelectList<AccountType>().ToList();
+                    list.RemoveAt(2);
+                    if(UserManager.GetUserAsync(User).Result.AccountType == AccountType.Admin)
+                    {
+                        list.RemoveAt(1);
+                    }
+                }
+
+                @(UserManager.GetUserAsync(User).Result.IsAdmin() ? Html.DropDownList("AccountType", list, UserManager.GetUserAsync(User).Result.AccountType.ToString(), new {@class = "form-control"}) : Html.DropDownList("AccountType", list, UserManager.GetUserAsync(User).Result.AccountType.ToString(), new {@class = "form-control", disabled = true}))
+
+                <span asp-validation-for="Input.AccountType" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Input.Grade"></label>
-                <input asp-for="Input.Grade" class="form-control" disabled />
+                <input asp-for="Input.Grade" class="form-control" disabled/>
             </div>
             <button type="submit" class="btn btn-default">Save</button>
         </form>
@@ -42,5 +60,5 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

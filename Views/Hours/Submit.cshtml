@@ -1,0 +1,40 @@
+@model WahsKeyClubSite.Models.ServiceHours
+
+@{
+    ViewData["Title"] = "Log Hours";
+    ViewData["Header"] = "Submit your service hours here. You can change this information later.";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Submit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DateOfActivity" class="control-label"></label>
+                <input asp-for="DateOfActivity" class="form-control" />
+                <span asp-validation-for="DateOfActivity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Hours" class="control-label"></label>
+                <input asp-for="Hours" class="form-control" />
+                <span asp-validation-for="Hours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Activity" class="control-label"></label>
+                <input asp-for="Activity" class="form-control" />
+                <span asp-validation-for="Activity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ViewHours">Back to Hours</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

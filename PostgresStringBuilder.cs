@@ -10,7 +10,7 @@ namespace WahsKeyClubSite
         Prefer
     }
 
-    public class PostgreSqlConnectionStringBuilder : DbConnectionStringBuilder
+    public class PostgresStringBuilder : DbConnectionStringBuilder
     {
         private string database;
         private string host;
@@ -21,7 +21,7 @@ namespace WahsKeyClubSite
         private bool trustServerCertificate;
         private SslMode sslMode;
 
-        public PostgreSqlConnectionStringBuilder(string uriString)
+        public PostgresStringBuilder(string uriString)
         {
             ParseUri(uriString);
         }

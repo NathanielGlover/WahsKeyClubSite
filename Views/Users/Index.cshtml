@@ -1,0 +1,84 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model IEnumerable<User>
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Manage Users";
+    ViewData["Header"] = "View, promote, and delete users in the service hour logs. This page should only be visible to users with admin privileges.";
+}
+
+<table class="table">
+    <thead style="background: darkgrey">
+    <tr>
+        @{
+            if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+            {
+                <th>
+                    @Html.DisplayName("User ID")
+                </th>
+            }
+        }
+        <th>
+            @Html.DisplayName("Creation Date")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Grade)
+        </th>
+        <th>
+            @Html.DisplayName("Account Type")
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach(var item in Model)
+    {
+        <tr>
+            @{
+                if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                }
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.CreationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Grade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountType)
+            </td>
+            @{
+                if(!item.IsDeveloper())
+                {
+                    <td>
+                        <a asp-action="ChangeRole" asp-route-id="@item.Id">Promote</a><br/>
+                        @{
+                            if(!item.IsAdmin())
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            }
+                        }
+                    </td>
+                }
+            }
+        </tr>
+    }
+    </tbody>
+</table>

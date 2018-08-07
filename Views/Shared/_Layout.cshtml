@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
@@ -26,7 +31,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">WAHS Key Club</a>
+            @{
+                if(SignInManager.IsSignedIn(User))
+                {
+                    <a asp-action="Index" asp-controller="Home" class="navbar-brand">Hello @UserManager.GetUserAsync(User).Result.Name.Split(" ")[0]!</a>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-controller="Home" class="navbar-brand">WAHS Key Club</a>
+                }
+            }
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">

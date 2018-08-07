@@ -1,11 +1,13 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using WahsKeyClubSite.Areas.Identity.Data;
+using WahsKeyClubSite.Models;
 
 namespace WahsKeyClubSite.Areas.Identity.Pages.Account.Manage
 {
@@ -14,15 +16,17 @@ namespace WahsKeyClubSite.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly ServiceHoursDbContext hoursContext;
 
         public DeletePersonalDataModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger, ServiceHoursDbContext hoursContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            this.hoursContext = hoursContext;
         }
 
         [BindProperty]
@@ -69,9 +73,12 @@ namespace WahsKeyClubSite.Areas.Identity.Pages.Account.Manage
 
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
+            var hours = from entry in hoursContext.ServiceHours.ToList() where entry.UserId == userId select entry;
+            hoursContext.RemoveRange(hours);
+            await hoursContext.SaveChangesAsync();
             if (!result.Succeeded)
             {
-                throw new InvalidOperationException($"Unexpected error occurred deleteing user with ID '{userId}'.");
+                throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
             }
 
             await _signInManager.SignOutAsync();

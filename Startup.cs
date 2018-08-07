@@ -39,14 +39,14 @@ namespace WahsKeyClubSite
                 p.WaitForExit();
             }
 
-            var builder = new PostgreSqlConnectionStringBuilder(url)
+            var builder = new PostgresStringBuilder(url)
             {
                 Pooling = true,
                 TrustServerCertificate = true,
                 SslMode = SslMode.Require
             };            
 
-//            services.AddEntityFrameworkNpgsql().AddDbContext<UserContext>(options => options.UseNpgsql(builder.ConnectionString));
+            services.AddEntityFrameworkNpgsql().AddDbContext<ServiceHoursDbContext>(options => options.UseNpgsql(builder.ConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,60 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model IEnumerable<WahsKeyClubSite.Models.ServiceHours>
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Service Hours";
+    ViewData["Header"] = "View, edit, and delete your service hour entries.";
+}
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue"asp-action="Submit">Log Service Hours</a>
+
+
+<h2 class=""></h2>
+<table class="table" id="totals">
+    <thead></thead>
+</table>
+
+<table class="table">
+    <thead style="background: darkgrey">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DateSubmitted)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfActivity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Hours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Activity)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach(var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateSubmitted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfActivity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Activity)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

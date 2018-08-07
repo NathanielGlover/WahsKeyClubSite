@@ -1,0 +1,83 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model WahsKeyClubSite.Controllers.UsersController.InputModel
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Promote or Demote User";
+}
+
+<h3>Are you sure you want to change this user's account type?</h3>
+<div>
+    <dl class="dl-horizontal">
+        @{
+            if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+            {
+                <dt>
+                    @Html.DisplayName("User ID")
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => UserManager.FindByIdAsync(model.Id).Result.Id)
+                </dd>
+            }
+        }
+        <dt>
+            @Html.DisplayName("Creation Date")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => UserManager.FindByIdAsync(model.Id).Result.CreationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => UserManager.FindByIdAsync(model.Id).Result.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => UserManager.FindByIdAsync(model.Id).Result.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => UserManager.FindByIdAsync(model.Id).Result.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => UserManager.FindByIdAsync(model.Id).Result.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => UserManager.FindByIdAsync(model.Id).Result.Grade)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => UserManager.FindByIdAsync(model.Id).Result.Grade)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => UserManager.FindByIdAsync(model.Id).Result.AccountType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => UserManager.FindByIdAsync(model.Id).Result.AccountType)
+        </dd>
+    </dl>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ChangeRole">
+            <input type="hidden" asp-for="Id"/>
+            <div class="form-group @(!UserManager.GetUserAsync(User).Result.IsAdmin() ? "hidden" : "")">
+                <label asp-for="AccountType" class="control-label">Account Type</label>
+                @{
+                    var list = Html.GetEnumSelectList<AccountType>().ToList();
+                    if(UserManager.GetUserAsync(User).Result.AccountType != AccountType.Developer)
+                    {
+                        list.RemoveAt(2);
+                    }
+                }
+
+                @Html.DropDownList("AccountType", list, new {@class = "form-control"})
+
+                <span asp-validation-for="AccountType" class="text-danger"></span>
+            </div>
+            <input type="submit" value="Change Role" class="btn btn-default"/> |
+            <a asp-action="Index">Back to List</a>
+        </form>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

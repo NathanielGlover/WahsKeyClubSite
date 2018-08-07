@@ -34,7 +34,7 @@ namespace WahsKeyClubSite.Areas.Identity
                     p.WaitForExit();
                 }
 
-                var stringBuilder = new PostgreSqlConnectionStringBuilder(url)
+                var stringBuilder = new PostgresStringBuilder(url)
                 {
                     Pooling = true,
                     TrustServerCertificate = true,

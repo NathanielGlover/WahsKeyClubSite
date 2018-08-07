@@ -1,0 +1,61 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model WahsKeyClubSite.Areas.Identity.Data.User
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<h3>Are you sure you want to delete this user? All service hours submitted by this user will be deleted as well.</h3>
+<div>
+    <dl class="dl-horizontal">
+        @{
+            if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+            {
+                <dt>
+                    @Html.DisplayName("User ID")
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Id)
+                </dd>
+            }
+        }
+        <dt>
+            @Html.DisplayName("Creation Date")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Grade)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Grade)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AccountType)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

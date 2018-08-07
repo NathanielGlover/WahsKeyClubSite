@@ -1,0 +1,63 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model IEnumerable<WahsKeyClubSite.Models.ServiceHours>
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Hour Logs";
+    ViewData["Header"] = "View and delete entries in the service hour logs. This page should only be visible to users with admin privileges.";
+}
+
+<table class="table">
+    <thead style="background: darkgrey">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => UserManager.FindByIdAsync(model.UserId).Result.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => UserManager.FindByIdAsync(model.UserId).Result.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateSubmitted)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfActivity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Hours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Activity)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach(var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.UserId).Result.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.UserId).Result.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateSubmitted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfActivity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Activity)
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
