@@ -33,7 +33,11 @@
     </tr>
     </thead>
     <tbody>
-    @foreach(var item in Model)
+    @{
+        var hours = Model.ToList();
+        hours.Sort((previous, current) => current.DateSubmitted.CompareTo(previous.DateSubmitted));
+    }
+    @foreach(var item in hours)
     {
         <tr>
             <td>
@@ -55,7 +59,19 @@
                 @Html.DisplayFor(modelItem => item.Activity)
             </td>
             <td>
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                @{
+                    if(UserManager.FindByIdAsync(item.UserId).Result.IsAdmin())
+                    {
+                        if(UserManager.GetUserAsync(User).Result.IsDeveloper() && !UserManager.FindByIdAsync(item.UserId).Result.IsDeveloper())
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    }
+                }
             </td>
         </tr>
     }

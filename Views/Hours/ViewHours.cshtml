@@ -35,7 +35,11 @@
     </tr>
     </thead>
     <tbody>
-    @foreach(var item in Model)
+    @{
+        var hours = Model.ToList();
+        hours.Sort((previous, current) => current.DateSubmitted.CompareTo(previous.DateSubmitted));
+    }
+    @foreach(var item in hours)
     {
         <tr>
             <td>

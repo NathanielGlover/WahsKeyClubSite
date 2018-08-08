@@ -33,7 +33,7 @@ namespace WahsKeyClubSite.Models
         
         public string UserId { get; set; }
         
-        [Display(Name = "Time Submitted")]
+        [Display(Name = "Date Submitted")]
         public DateTime DateSubmitted { get; set; }
 
         [Required(ErrorMessage = "You must enter a date for the service activity.")]

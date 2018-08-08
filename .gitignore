@@ -5,7 +5,6 @@
 
 # User-specific stuff
 .idea/**/tasks.xml
-.idea/**/dictionaries
 .idea/**/shelf
 .idea/*
 
@@ -36,9 +35,6 @@ cmake-build-release/
 out/
 obj/
 bin/
-
-# Security
-Users.db
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/

@@ -34,6 +34,9 @@
         <th>
             @Html.DisplayName("Account Type")
         </th>
+        <th>
+            @Html.DisplayName("Email Verified")
+        </th>
         <th></th>
     </tr>
     </thead>
@@ -64,15 +67,28 @@
             <td>
                 @Html.DisplayFor(modelItem => item.AccountType)
             </td>
+            <td>
+                @Html.DisplayName(item.EmailConfirmed ? "Yes" : "No")
+            </td>
             @{
                 if(!item.IsDeveloper())
                 {
                     <td>
-                        <a asp-action="ChangeRole" asp-route-id="@item.Id">Promote</a><br/>
                         @{
                             if(!item.IsAdmin())
                             {
                                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                <br/>
+                                <a asp-action="ChangeRole" asp-route-id="@item.Id">Promote</a>
+                            }
+                            else
+                            {
+                                if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <br/>
+                                    <a asp-action="ChangeRole" asp-route-id="@item.Id">Promote</a>
+                                }
                             }
                         }
                     </td>

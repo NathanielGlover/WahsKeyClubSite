@@ -1,4 +1,7 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
 @model WahsKeyClubSite.Models.ServiceHours
+@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Delete";
@@ -11,12 +14,17 @@
     <h4>Service Hours</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
+        @{
+            if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.UserId)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.UserId)
+                </dd>
+            }
+        }
         <dt>
             @Html.DisplayNameFor(model => model.DateSubmitted)
         </dt>

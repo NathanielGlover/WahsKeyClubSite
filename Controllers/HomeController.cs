@@ -8,7 +8,7 @@ namespace WahsKeyClubSite.Controllers
     {
         public IActionResult Index() => View();
 
-        public IActionResult Calendar() => View();
+        public IActionResult Calendar() => View(HttpContext.Request.IsMobileBrowser());
 
         public IActionResult Contact() => View();
 
