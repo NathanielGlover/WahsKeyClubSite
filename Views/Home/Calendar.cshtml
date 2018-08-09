@@ -5,7 +5,7 @@
 
 <body>
 <div class="row">
-    <div class="column" style="width: @(Model ? "100%" : "35%")">
+    <div class="column" style="width: @(Model ? "100%" : "20%")">
         <p>
             If you want to attend an event that requires some form of registration, click on the event in the calendar and there will be a sign-up link in it's description.
         </p>
@@ -14,7 +14,7 @@
             Many if not all of the events on this calendar will also be announced and explained in detail during our meetings.
         </p>
     </div>
-    <div style="border: 0;; padding-right: 15px; top: 0">
+    <div style="border: 0; padding-right: 15px; top: 0">
         @{
             if(Model) //Mobile
             {
@@ -22,7 +22,7 @@
             }
             else //Desktop
             {
-                <iframe src="https://calendar.google.com/calendar/embed?src=wahskeyclub13%40gmail.com&ctz=America%2FNew_York&bgcolor=%23e6d7ff&amp" style="border: 0; float: right;" width="700" height="500" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://calendar.google.com/calendar/embed?src=wahskeyclub13%40gmail.com&ctz=America%2FNew_York&bgcolor=%23e6d7ff&amp" style="border: 0; float: right;" width="79%" height="500" frameborder="0" scrolling="no"></iframe>
             }
         }
     </div>

@@ -8,6 +8,13 @@
     ViewData["Header"] = "View and delete entries in the service hour logs. This page should only be visible to users with admin privileges.";
 }
 
+@{
+    if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+    {
+        <a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="SubmitDeveloper">Submit Hours (Dev Only)</a>
+    }
+}
+
 <table class="table">
     <thead style="background: darkgrey">
     <tr>

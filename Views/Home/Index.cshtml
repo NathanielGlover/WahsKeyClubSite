@@ -1,4 +1,9 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@inject UserManager<User> UserManager
+@inject ServiceHoursDbContext HoursDbContext
+
+@{
     ViewData["Title"] = "Home";
     ViewData["Header"] = "Welcome to the WAHS Key Club website!";
 }
@@ -9,17 +14,23 @@
     <div class="column">
         <h2>About Our Club</h2>
         <img src="~/images/keyclubicon.png" alt="Key Club International Icon" class="img-wrap-left"/>
-        <p>We are the Western Albemarle High School Key Club, our high school's division of <a href="https://www.keyclub.org/" target="_blank">Key Club International</a>. Since our beginning in 2014, we have grown into a group of around 50 student members dedicated to serving the Crozet and Charlottesville communities through fundraisers, elementary school outreach events, food pantries, and more. We are also sponsored by and coordinate frequently with with our <a href="https://kiwaniscville.org/" target="_blank">local Kiwanis club</a>. To see pictures from our recent community service projects, be sure to follow us on Instagram (<a href="https://www.instagram.com/wahskeyclub/?hl=en">@@wahskeyclub</a>) or check out our Instagram feed below.</p>
+        <p>We are the Western Albemarle High School Key Club, our high school's division of <a href="https://www.keyclub.org/" target="_blank">Key Club International</a>. Since our beginning in 2014, we have grown into a group of @((from user in UserManager.Users where user.EmailConfirmed select user).Count()) student members dedicated to serving the Crozet and Charlottesville communities through fundraisers, elementary school outreach events, food pantries, and more. We are also sponsored by and coordinate frequently with with our <a href="https://kiwaniscville.org/" target="_blank">local Kiwanis club</a>. To see pictures from our recent community service projects, be sure to follow us on Instagram (<a href="https://www.instagram.com/wahskeyclub/?hl=en">@@wahskeyclub</a>) or check out our Instagram feed below.</p>
     </div>
     <div class="column">
         <h2>Becoming a Member</h2>
-        <p>To become a member, you will need to create an account and fill out a membership form, which you should turn in to our 
-            treasurer with the $50 membership dues. Be sure to use the same first and last name on the form and your account, otherwise 
-            we will not be able to verify your account and membership. Additionally, if you are interested but uncertain whether you want to become a member, feel free to come to one of our weekly meetings during lunch (12:25 - 12:50) on Friday in the choir room, or reach out to any of our officers.</p>
+        <p>
+            To become a member, you will need to create an account and fill out a membership form, which you should turn in to our
+            treasurer with the $50 membership dues. Be sure to use the same first and last name on the form and your account, otherwise
+            we will not be able to verify your account and membership. Additionally, if you are interested but uncertain whether you want to become a member, feel free to come to one of our weekly meetings during lunch (12:25 - 12:50) on Friday in the choir room, or reach out to any of our officers.
+        </p>
         <p>Membership Form:</p>
         <ul>
-            <li><a href="https://drive.google.com/open?id=1tOqnALKXiAadbC9LZ3OsbWqSjLFZip9n" target="_blank">Google Drive PDF</a></li>
-            <li><a href="https://drive.google.com/uc?authuser=0&id=1tOqnALKXiAadbC9LZ3OsbWqSjLFZip9n&export=download" target="_blank">Direct Download</a></li>
+            <li>
+                <a href="https://drive.google.com/open?id=1tOqnALKXiAadbC9LZ3OsbWqSjLFZip9n" target="_blank">Google Drive PDF</a>
+            </li>
+            <li>
+                <a href="https://drive.google.com/uc?authuser=0&id=1tOqnALKXiAadbC9LZ3OsbWqSjLFZip9n&export=download" target="_blank">Direct Download</a>
+            </li>
         </ul>
         <p>If you do not have access to a printer, you can get a physical copy of the form from our treasurer at one of the meetings.</p>
         @* TODO: Actually make a membership form or get it from somebody else, add form due date *@
@@ -29,8 +40,37 @@
 <div class="row">
     <div class="column">
         <h2 style="padding-bottom: 10px">Instagram Feed (@@wahskeyclub)</h2>
-        <!-- LightWidget WIDGET --><script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script><iframe src="//lightwidget.com/widgets/8af171ded5c051938579dfd3b290fdc1.html" scrolling="no" allowtransparency="true" style="width:100%;border:0;overflow:hidden;"></iframe>
+        <!-- LightWidget WIDGET --><script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script><iframe src="//lightwidget.com/widgets/8af171ded5c051938579dfd3b290fdc1.html" scrolling="no" allowtransparency="true" style="width: 100%; border: 0; overflow: hidden;"></iframe>
         @* TODO: Pay LightWidget $10 and get this thing upgraded. Double check it before you do because they won't allow changes. *@
+    </div>
+    <div class="column">
+        @{
+            var hours = HoursDbContext.ServiceHours;
+            var totalHours = new Dictionary<User, double>(UserManager.Users.Count());
+
+            foreach(var user in UserManager.Users)
+            {
+                totalHours.Add(user, (from entry in hours where entry.UserId == user.Id select entry.Hours).Sum());
+            }
+
+            double maxHours = totalHours.Max(pair => pair.Value);
+            var userWithMax = totalHours.FirstOrDefault(entry => Math.Abs(entry.Value - maxHours) < 0.001).Key;
+
+            double Median(List<double> set)
+            {
+                double medianPos = (double) (set.Count - 1) / 2;
+                return (set[(int) Math.Floor(medianPos)] + set[(int) Math.Ceiling(medianPos)]) / 2;
+            }
+        }
+        <h2>Community Service Statistics</h2>
+        <p>As of today, the club has achieved the following since June 12th, 2018:</p>
+        <ul style="font-size: larger; font-weight: bold">
+            <li>@((from user in UserManager.Users where user.EmailConfirmed select user).Count()) active members</li>
+            <li>@Math.Round((from entry in HoursDbContext.ServiceHours select entry.Hours).Sum()) community service hours</li>
+            <li>A median of @Math.Round(Median(totalHours.Values.ToList())) community service hours per member</li>
+        </ul>
+        <p>Congratulations to <strong>@userWithMax.Name</strong>, our most active member, who has logged a grand total of <strong>@Math.Round(maxHours) community service hours!</strong></p>
+        <p>Help us serve our community even more by joining the club!</p>
     </div>
 </div>
 

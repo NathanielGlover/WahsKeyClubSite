@@ -85,6 +85,11 @@ namespace WahsKeyClubSite.Controllers
         // GET: Hours/Create
         public IActionResult Submit()
         {
+            if(!signInManager.IsSignedIn(User))
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity"});
+            }
+            
             return View();
         }
 
@@ -93,8 +98,7 @@ namespace WahsKeyClubSite.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Submit([Bind("ID,DateOfActivity,Hours,Activity")]
-            ServiceHours serviceHours)
+        public async Task<IActionResult> Submit([Bind("ID,DateOfActivity,Hours,Activity")] ServiceHours serviceHours)
         {
             serviceHours.DateSubmitted = DateTime.Now;
 
@@ -106,6 +110,51 @@ namespace WahsKeyClubSite.Controllers
                 }
 
                 serviceHours.UserId = userManager.GetUserAsync(User).Result.Id;
+
+                context.Add(serviceHours);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(ViewHours));
+            }
+
+            return View(serviceHours);
+        }
+
+        // GET: Hours/Create
+        public IActionResult SubmitDeveloper()
+        {
+            if(!signInManager.IsSignedIn(User))
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity"});
+            }
+            
+            if(!userManager.GetUserAsync(User).Result.IsDeveloper())
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity"});
+            }
+            
+            return View();
+        }
+
+        // POST: Hours/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitDeveloper([Bind("ID,UserId,DateOfActivity,Hours,Activity")] ServiceHours serviceHours)
+        {
+            serviceHours.DateSubmitted = DateTime.Now;
+
+            if(ModelState.IsValid)
+            {
+                if(!signInManager.IsSignedIn(User))
+                {
+                    return RedirectToPage("/Account/Login", new { area = "Identity"});
+                }
+            
+                if(!userManager.GetUserAsync(User).Result.IsDeveloper())
+                {
+                    return RedirectToPage("/Account/AccessDenied", new { area = "Identity"});
+                }
 
                 context.Add(serviceHours);
                 await context.SaveChangesAsync();
@@ -160,7 +209,7 @@ namespace WahsKeyClubSite.Controllers
             var serviceHours = await context.ServiceHours.FindAsync(id);
             context.ServiceHours.Remove(serviceHours);
             await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ViewHours));
         }
 
         private bool ServiceHoursExists(int id)

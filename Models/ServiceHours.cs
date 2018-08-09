@@ -42,7 +42,7 @@ namespace WahsKeyClubSite.Models
         public DateTime DateOfActivity { get; set; }
 
         [Required(ErrorMessage = "You must enter a positive quantity of hours.")]
-        [Display(Name = "Total Hours")]
+        [Display(Name = "Hours")]
         [DataType(DataType.Duration)]
         [PosNumberNoZero]
         public double Hours { get; set; }
