@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WahsKeyClubSite.Areas.Identity.Data;
@@ -16,13 +17,15 @@ namespace WahsKeyClubSite.Controllers
         private readonly ServiceHoursDbContext hoursContext;
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+        private readonly IEmailSender emailSender;
 
-        public UsersController(UserDbContext context, UserManager<User> userManager, SignInManager<User> signInManager, ServiceHoursDbContext hoursContext)
+        public UsersController(UserDbContext context, UserManager<User> userManager, SignInManager<User> signInManager, ServiceHoursDbContext hoursContext, IEmailSender emailSender)
         {
             this.context = context;
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.hoursContext = hoursContext;
+            this.emailSender = emailSender;
         }
 
         public async Task<IActionResult> Index()
@@ -39,6 +42,46 @@ namespace WahsKeyClubSite.Controllers
             
             return View(await context.Users.ToListAsync());
         }
+
+        public IActionResult Email()
+        {
+            if(!signInManager.IsSignedIn(User))
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity"});
+            }
+
+            if(!userManager.GetUserAsync(User).Result.IsAdmin())
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity"});
+            }
+
+            return View();
+        }
+
+        public class EmailModel
+        {
+            public string Subject { get; set; }
+            
+            [DataType(DataType.MultilineText)]
+            public string Message { get; set; }
+        }
+
+        [HttpPost, ActionName("Email")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EmailConfirmed([Bind("Subject,Message")] EmailModel input)
+        {
+            foreach(var user in userManager.Users.ToList())
+            {
+                if(user.EmailConfirmed)
+                {
+                    await emailSender.SendEmailAsync(user.Email, input.Subject, input.Message);
+                }
+            }
+            
+            return RedirectToAction("MessageConfirmed");
+        }
+
+        public IActionResult MessageConfirmed() => View();
 
         // GET: Hours/Delete/5
         public async Task<IActionResult> Delete(string id)

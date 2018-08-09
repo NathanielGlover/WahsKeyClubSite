@@ -18,7 +18,7 @@ namespace WahsKeyClubSite
                 EnableSsl = true
             };
             mail.Subject = subject;
-            mail.Body = htmlMessage + "\n" + "\n" + "\n" + "Please do not reply to these emails; they are automated and we cannot see your replies. If you want to contact us, do so at wahskeyclub13@gmail.com.";
+            mail.Body = htmlMessage + "\n" + "\n" + "------------------------------------------------------\n" + "Please do not reply to these emails; they are automated and we cannot see your replies. If you want to contact us, do so at wahskeyclub13@gmail.com.";
             
             return client.SendMailAsync(mail);
         }

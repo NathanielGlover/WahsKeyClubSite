@@ -11,7 +11,10 @@
                 if(UserManager.GetUserAsync(User).Result.IsAdmin())
                 {
                     <li>
-                        <a asp-controller="Hours" asp-action="Index">Hour Logs</a>
+                        <a asp-controller="Users" asp-action="Email">Email Club</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Hours" asp-action="Index">Hour Log</a>
                     </li>
                     <li>
                         <a asp-controller="Users" asp-action="Index">Manage Users</a>

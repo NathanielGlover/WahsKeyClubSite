@@ -1,0 +1,9 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Message Delivered";
+}
+
+<h4>Your message has been delivered to all @UserManager.Users.Count() verified club members. Click <a asp-controller="Users" asp-action="Email">here</a> to send another message.</h4>

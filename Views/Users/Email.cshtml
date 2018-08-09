@@ -1,0 +1,37 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model WahsKeyClubSite.Controllers.UsersController.EmailModel
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Email Club";
+    ViewData["Header"] = "Send an email from wahskeyclubnoreply@gmail.com to every club member with a verified account.";
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <form asp-action="Email">
+            <div class="form-group">
+                <label asp-for="Subject" class="control-label">Subject</label>
+                <input asp-for="Subject" class="form-control"/>
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Message"></label>
+                <textarea rows="8" asp-for="Message" class="form-control"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+            <input type="submit" value="Send Email" class="btn btn-default"/>
+        </form>
+    </div>
+    <div class="col-lg-6">
+        <p>
+            This message will only be sent to users who have verified their emails. If the emails are not being received (they will be sent to
+            you as well, assuming you are a verified user, so you can confirm that they are being sent) or are taking an unreasonable amount of time to send, please contact the webmaster.
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
