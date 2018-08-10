@@ -77,17 +77,21 @@
                         @{
                             if(!item.IsAdmin())
                             {
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                <a asp-controller="Hours" asp-action="ViewHours" asp-route-id="@item.Id">Hours</a>
                                 <br/>
                                 <a asp-action="ChangeRole" asp-route-id="@item.Id">Promote</a>
+                                <br/>
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                             }
                             else
                             {
                                 if(UserManager.GetUserAsync(User).Result.IsDeveloper())
                                 {
-                                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <a asp-controller="Hours" asp-action="ViewHours" asp-route-id="@item.Id">Hours</a>
                                     <br/>
                                     <a asp-action="ChangeRole" asp-route-id="@item.Id">Promote</a>
+                                    <br/>
+                                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 }
                             }
                         }

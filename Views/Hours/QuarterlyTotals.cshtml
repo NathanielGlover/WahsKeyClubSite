@@ -1,0 +1,51 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model List<double>
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Hour Logs";
+    ViewData["Header"] = "View and delete entries in the service hour logs. This page should only be visible to users with admin privileges.";
+}
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="Index">Entries</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="UserTotals">User Totals</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="QuarterlyTotals">Quarterly Totals</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="MonthlyTotals">Monthly Totals</a>
+
+@{
+    if(UserManager.GetUserAsync(User).Result.IsDeveloper())
+    {
+        <a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="SubmitDeveloper">Submit Hours (Dev Only)</a>
+    }
+}
+
+<table class="table">
+    <thead style="background: darkgrey">
+    <tr>
+        <th>
+            @Html.DisplayName($"Quarter for {ViewData["Year"]}-{(int) ViewData["Year"] + 1} Year")
+        </th>
+        <th>
+            @Html.DisplayName("Total Hours")
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(int i = 0; i < Model.Count; i++)
+    {
+        <tr>
+            <td>
+                @Html.DisplayName((i + 1).ToString())
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[i])
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

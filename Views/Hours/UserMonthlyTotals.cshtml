@@ -1,0 +1,49 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model Dictionary<DateTime, double>
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Service Hours";
+}
+
+@{
+    if((bool) ViewData["YourHours"])
+    {
+        <a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-action="Submit">Log Service Hours</a>
+    }
+}
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="ViewHours" 
+   asp-route-id="@ViewData["UserID"]">Entries</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="UserQuarterlyTotals" asp-route-id="@ViewData["UserID"]">Quarterly Totals</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="UserMonthlyTotals" asp-route-id="@ViewData["UserID"]">Monthly Totals</a>
+
+<table class="table">
+    <thead style="background: darkgrey">
+    <tr>
+        <th>
+            @Html.DisplayName("Month")
+        </th>
+        <th>
+            @Html.DisplayName("Total Hours")
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach(var item in Model.Reverse())
+    {
+        <tr>
+            <td>
+                @Html.DisplayName(item.Key.ToString("MMMM") + ", " + item.Key.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -11,21 +11,21 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DateOfActivity" class="control-label"></label>
-                <input asp-for="DateOfActivity" class="form-control" />
+                <input asp-for="DateOfActivity" class="form-control" value="@ViewData["Date"]"/>
                 <span asp-validation-for="DateOfActivity" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Hours" class="control-label"></label>
-                <input asp-for="Hours" class="form-control" />
+                <input asp-for="Hours" class="form-control" value="@ViewData["Hours"]"/>
                 <span asp-validation-for="Hours" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Activity" class="control-label"></label>
-                <input asp-for="Activity" class="form-control" />
+                <input asp-for="Activity" class="form-control" value="@ViewData["Name"]"/>
                 <span asp-validation-for="Activity" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-default" />
+                <input type="submit" value="Save Changes" class="btn btn-default" />
             </div>
         </form>
     </div>

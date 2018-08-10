@@ -5,16 +5,21 @@
 
 @{
     ViewData["Title"] = "Service Hours";
-    ViewData["Header"] = "View, edit, and delete your service hour entries.";
 }
 
-<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-action="Submit">Log Service Hours</a>
+@{
+    if((bool) ViewData["YourHours"])
+    {
+        <a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-action="Submit">Log Service Hours</a>
+    }
+}
 
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="ViewHours" 
+   asp-route-id="@ViewData["UserID"]">Entries</a>
 
-<h2 class=""></h2>
-<table class="table" id="totals">
-    <thead></thead>
-</table>
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="UserQuarterlyTotals" asp-route-id="@ViewData["UserID"]">Quarterly Totals</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="UserMonthlyTotals" asp-route-id="@ViewData["UserID"]">Monthly Totals</a>
 
 <table class="table">
     <thead style="background: darkgrey">
@@ -55,7 +60,13 @@
                 @Html.DisplayFor(modelItem => item.Activity)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                @{
+                    if((bool) ViewData["YourHours"])
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.ID" asp-route-date="@item.DateOfActivity" asp-route-hours="@item.Hours" asp-route-name="@item.Activity">Edit</a>
+                        <br/>
+                    }
+                }
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>

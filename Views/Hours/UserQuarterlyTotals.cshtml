@@ -1,0 +1,49 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model List<double>
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Service Hours";
+}
+
+@{
+    if((bool) ViewData["YourHours"])
+    {
+        <a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-action="Submit">Log Service Hours</a>
+    }
+}
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="ViewHours" 
+   asp-route-id="@ViewData["UserID"]">Entries</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="UserQuarterlyTotals" asp-route-id="@ViewData["UserID"]">Quarterly Totals</a>
+
+<a class="nav navbar-brand navbar-btn" style="background: lightblue" asp-controller="Hours" asp-action="UserMonthlyTotals" asp-route-id="@ViewData["UserID"]">Monthly Totals</a>
+
+<table class="table">
+    <thead style="background: darkgrey">
+    <tr>
+        <th>
+            @Html.DisplayName($"Quarter for {ViewData["Year"]}-{(int) ViewData["Year"] + 1} Year")
+        </th>
+        <th>
+            @Html.DisplayName("Total Hours")
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(int i = 0; i < Model.Count; i++)
+    {
+        <tr>
+            <td>
+                @Html.DisplayName((i + 1).ToString())
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[i])
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

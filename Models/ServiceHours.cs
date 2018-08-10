@@ -39,6 +39,7 @@ namespace WahsKeyClubSite.Models
         [Required(ErrorMessage = "You must enter a date for the service activity.")]
         [Display(Name = "Date of Activity")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateOfActivity { get; set; }
 
         [Required(ErrorMessage = "You must enter a positive quantity of hours.")]

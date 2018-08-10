@@ -39,8 +39,10 @@ namespace WahsKeyClubSite.Controllers
             {
                 return RedirectToPage("/Account/AccessDenied", new { area = "Identity"});
             }
+
+            var model = await context.Users.ToListAsync();
             
-            return View(await context.Users.ToListAsync());
+            return View(model.OrderBy(user => user.Name));
         }
 
         public IActionResult Email()

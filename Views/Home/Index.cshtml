@@ -58,6 +58,7 @@
 
             double Median(List<double> set)
             {
+                set.Sort();
                 double medianPos = (double) (set.Count - 1) / 2;
                 return (set[(int) Math.Floor(medianPos)] + set[(int) Math.Ceiling(medianPos)]) / 2;
             }
