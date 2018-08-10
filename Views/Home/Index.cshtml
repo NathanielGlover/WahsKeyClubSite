@@ -2,6 +2,7 @@
 @using WahsKeyClubSite.Areas.Identity.Data
 @inject UserManager<User> UserManager
 @inject ServiceHoursDbContext HoursDbContext
+@model bool
 
 @{
     ViewData["Title"] = "Home";
@@ -40,8 +41,19 @@
 <div class="row">
     <div class="column">
         <h2 style="padding-bottom: 10px">Instagram Feed (@@wahskeyclub)</h2>
-        <!-- LightWidget WIDGET --><script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script><iframe src="//lightwidget.com/widgets/8af171ded5c051938579dfd3b290fdc1.html" scrolling="no" allowtransparency="true" style="width: 100%; border: 0; overflow: hidden;"></iframe>
-        @* TODO: Pay LightWidget $10 and get this thing upgraded. Double check it before you do because they won't allow changes. *@
+        <!-- InstaWidget -->
+        @{
+            if(Model) //Mobile
+            {
+                <a href="https://instawidget.net/v/user/wahskeyclub" id="link-bf57ab2b0aca0018c2176e7700115a90df5e5b58cc08d3c820c2452c9f8588de">@@wahskeyclub</a>
+                <script src="https://instawidget.net/js/instawidget.js?u=bf57ab2b0aca0018c2176e7700115a90df5e5b58cc08d3c820c2452c9f8588de&width=200px"></script>
+            }
+            else
+            {
+                <a href="https://instawidget.net/v/user/wahskeyclub" id="link-bf57ab2b0aca0018c2176e7700115a90df5e5b58cc08d3c820c2452c9f8588de">@@wahskeyclub</a>
+                <script src="https://instawidget.net/js/instawidget.js?u=bf57ab2b0aca0018c2176e7700115a90df5e5b58cc08d3c820c2452c9f8588de&width=500px"></script>
+            }
+        }
     </div>
     <div class="column">
         @{

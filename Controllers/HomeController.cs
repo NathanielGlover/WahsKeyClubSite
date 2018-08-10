@@ -6,7 +6,7 @@ namespace WahsKeyClubSite.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index() => View();
+        public IActionResult Index() => View(HttpContext.Request.IsMobileBrowser());
 
         public IActionResult Calendar() => View(HttpContext.Request.IsMobileBrowser());
 
