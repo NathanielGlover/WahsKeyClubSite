@@ -39,7 +39,8 @@ namespace WahsKeyClubSite.Controllers
             {
                 new DateTime(currentSchoolYear, 6, 7),
                 new DateTime(currentSchoolYear, 11, 1),
-                new DateTime(currentSchoolYear + 1, 1, 10),
+                new DateTime(currentSchoolYear + 1, 1, 18),
+                new DateTime(currentSchoolYear + 1, 3, 28),
                 new DateTime(currentSchoolYear + 1, 6, 7)
             };
         }
