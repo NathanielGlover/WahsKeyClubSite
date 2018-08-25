@@ -33,7 +33,7 @@ namespace WahsKeyClubSite.Controllers
             {
                 currentSchoolYear -= 1;
             }
-            
+
             //TODO: Read these from database
             quarters = new List<DateTime>
             {
@@ -61,7 +61,7 @@ namespace WahsKeyClubSite.Controllers
 
             var model = new List<double>(4);
 
-            for(int i = 1; i <= 4; i++)
+            for(int i = 1; i < quarters.Count; i++)
             {
                 var total = (from entry in hours where entry.DateOfActivity >= quarters[i - 1] && entry.DateOfActivity < quarters[i] select entry.Hours)
                     .Sum();
@@ -162,7 +162,7 @@ namespace WahsKeyClubSite.Controllers
 
             var model = new List<double>(4);
 
-            for(int i = 1; i <= 4; i++)
+            for(int i = 1; i < quarters.Count; i++)
             {
                 var total = (from entry in hours where entry.DateOfActivity >= quarters[i - 1] && entry.DateOfActivity < quarters[i] select entry.Hours)
                     .Sum();

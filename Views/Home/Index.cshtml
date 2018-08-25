@@ -63,7 +63,10 @@
 
             foreach(var user in UserManager.Users)
             {
-                totalHours.Add(user, (from entry in hours where entry.UserId == user.Id select entry.Hours).Sum());
+                if(user.EmailConfirmed)
+                {
+                    totalHours.Add(user, (from entry in hours where entry.UserId == user.Id select entry.Hours).Sum());
+                }
             }
 
             double maxHours = totalHours.Max(pair => pair.Value);
