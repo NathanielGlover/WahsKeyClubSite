@@ -45,6 +45,8 @@ namespace WahsKeyClubSite.Controllers
             };
         }
 
+        public IActionResult UnverifiedAccount() => View();
+
         public async Task<IActionResult> QuarterlyTotals()
         {
             if(!signInManager.IsSignedIn(User))
@@ -317,6 +319,11 @@ namespace WahsKeyClubSite.Controllers
                 return RedirectToPage("/Account/Login", new {area = "Identity"});
             }
 
+            if(!userManager.GetUserAsync(User).Result.EmailConfirmed)
+            {
+                return RedirectToAction("UnverifiedAccount", "Hours");
+            }
+
             return View();
         }
 
@@ -335,6 +342,11 @@ namespace WahsKeyClubSite.Controllers
                 if(!signInManager.IsSignedIn(User))
                 {
                     return RedirectToPage("/Account/Login", new {area = "Identity"});
+                }
+
+                if(!userManager.GetUserAsync(User).Result.EmailConfirmed)
+                {
+                    return RedirectToAction("UnverifiedAccount", "Hours");
                 }
 
                 serviceHours.UserId = userManager.GetUserAsync(User).Result.Id;
