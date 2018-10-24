@@ -37,7 +37,7 @@ namespace WahsKeyClubSite.Controllers
             //TODO: Read these from database
             quarters = new List<DateTime>
             {
-                new DateTime(currentSchoolYear, 6, 7),
+                new DateTime(currentSchoolYear, 6, 1),
                 new DateTime(currentSchoolYear, 11, 1),
                 new DateTime(currentSchoolYear + 1, 1, 18),
                 new DateTime(currentSchoolYear + 1, 3, 28),
@@ -59,6 +59,13 @@ namespace WahsKeyClubSite.Controllers
                 return RedirectToPage("/Account/AccessDenied", new {area = "Identity"});
             }
 
+            int currentSchoolYear = DateTime.Now.Year;
+
+            if(new DateTime(currentSchoolYear, 6, 7) > DateTime.Now)
+            {
+                currentSchoolYear -= 1;
+            }
+
             var hours = await context.ServiceHours.ToListAsync();
 
             var model = new List<double>(4);
@@ -70,7 +77,7 @@ namespace WahsKeyClubSite.Controllers
                 model.Add(total);
             }
 
-            ViewData["Year"] = 2018;
+            ViewData["Year"] = currentSchoolYear;
 
             return View(model);
         }
