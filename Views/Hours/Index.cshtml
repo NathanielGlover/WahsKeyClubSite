@@ -56,10 +56,25 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.UserId).Result.Name)
+                @{
+                    var user = UserManager.FindByIdAsync(item.UserId).Result;
+                    string name = "[graduated]";
+                    if(user != null)
+                    {
+                        name = user.Name;
+                    }
+                }
+                @Html.DisplayFor(modelItem => name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.UserId).Result.Email)
+                @{
+                    string email = "";
+                    if(user != null)
+                    {
+                        email = user.Email;
+                    }
+                }
+                @Html.DisplayFor(modelItem => email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateSubmitted)
@@ -75,7 +90,7 @@
             </td>
             <td>
                 @{
-                    if(UserManager.FindByIdAsync(item.UserId).Result.IsAdmin())
+                    if(user != null && user.IsAdmin())
                     {
                         if(UserManager.GetUserAsync(User).Result.IsDeveloper() && !UserManager.FindByIdAsync(item.UserId).Result.IsDeveloper())
                         {

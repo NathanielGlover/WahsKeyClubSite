@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WahsKeyClubSite.Areas.Identity.Data;
+using WahsKeyClubSite.Backend;
 using WahsKeyClubSite.Models;
 
 namespace WahsKeyClubSite.Controllers
@@ -84,6 +85,58 @@ namespace WahsKeyClubSite.Controllers
         }
 
         public IActionResult MessageConfirmed() => View();
+
+        public async Task<IActionResult> Advance()
+        {
+            if(!signInManager.IsSignedIn(User))
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity"});
+            }
+
+            if(!userManager.GetUserAsync(User).Result.IsDeveloper())
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity"});
+            }
+
+            return View();
+        }
+
+        [HttpPost, ActionName("Advance")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdvanceConfirmed()
+        {
+            if(!signInManager.IsSignedIn(User))
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity"});
+            }
+
+            if(!userManager.GetUserAsync(User).Result.IsDeveloper())
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity"});
+            }
+
+            foreach(var user in context.Users)
+            {
+                if(user.Grade != Grade.Senior)
+                {
+                    user.Grade += 1;
+                    context.Users.Update(user);
+                }
+                else
+                {
+                    if(user.AccountType == AccountType.Developer)
+                    {
+                        continue;
+                    }
+                    
+                    context.Users.Remove(user);
+                }
+            }
+            
+            await context.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: Hours/Delete/5
         public async Task<IActionResult> Delete(string id)
@@ -186,7 +239,6 @@ namespace WahsKeyClubSite.Controllers
 
             var user = await userManager.FindByIdAsync(input.Id);
             user.AccountType = input.AccountType;
-            Console.WriteLine(input.AccountType);
 
             context.Users.Update(user);
             

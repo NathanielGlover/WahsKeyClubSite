@@ -36,14 +36,16 @@
     </tr>
     </thead>
     <tbody>
-    @foreach(var item in Model.Reverse())
+    @foreach(var item in Model)
     {
         <tr>
             <td>
                 @Html.DisplayName(item.Key.ToString("MMMM") + ", " + item.Key.Year)
+                <hr />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Value)
+                <hr />
             </td>
         </tr>
     }

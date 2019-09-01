@@ -29,13 +29,12 @@ namespace WahsKeyClubSite
 
             string url = Configuration["DATABASE_URL"];
 
-            if(url == null) //If run in local environment
+            if(url == null) //If run locally
             {
                 var p = new Process {StartInfo = {UseShellExecute = false, RedirectStandardOutput = true, FileName = "/bin/bash"}};
                 p.StartInfo.Arguments = "heroku config:get -a wahskeyclub DATABASE_URL";
                 p.Start();
                 url = p.StandardOutput.ReadToEnd();
-                Console.WriteLine(url);
                 p.WaitForExit();
             }
 

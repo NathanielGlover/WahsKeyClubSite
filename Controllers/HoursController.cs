@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WahsKeyClubSite.Areas.Identity.Data;
+using WahsKeyClubSite.Backend;
 using WahsKeyClubSite.Models;
 
 namespace WahsKeyClubSite.Controllers
@@ -18,6 +16,7 @@ namespace WahsKeyClubSite.Controllers
         private readonly ServiceHoursDbContext context;
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+        private readonly HoursManager hoursManager;
 
         private readonly List<DateTime> quarters;
 
@@ -26,18 +25,13 @@ namespace WahsKeyClubSite.Controllers
             this.context = context;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            hoursManager = new HoursManager(context, userManager, signInManager);
 
-            int currentSchoolYear = DateTime.Now.Year;
+            int currentSchoolYear = HoursManager.CurrentSchoolYear;
 
-            if(new DateTime(currentSchoolYear, 6, 7) > DateTime.Now)
-            {
-                currentSchoolYear -= 1;
-            }
-
-            //TODO: Read these from database
             quarters = new List<DateTime>
             {
-                new DateTime(currentSchoolYear, 6, 1),
+                new DateTime(currentSchoolYear, 6, 7),
                 new DateTime(currentSchoolYear, 11, 1),
                 new DateTime(currentSchoolYear + 1, 1, 18),
                 new DateTime(currentSchoolYear + 1, 3, 28),
@@ -45,67 +39,55 @@ namespace WahsKeyClubSite.Controllers
             };
         }
 
+        public IActionResult RedirectForInvalidRequest(ValidationStatus validationStatus)
+        {
+            switch(validationStatus)
+            {
+                case ValidationStatus.NotSignedIn:
+                    return RedirectToPage("/Account/Login", new {area = "Identity"});
+                default:
+                    return RedirectToPage("/Account/AccessDenied", new {area = "Identity"});
+            }
+        }
+
         public IActionResult UnverifiedAccount() => View();
 
         public async Task<IActionResult> QuarterlyTotals()
         {
-            if(!signInManager.IsSignedIn(User))
-            {
-                return RedirectToPage("/Account/Login", new {area = "Identity"});
-            }
-
-            if(!userManager.GetUserAsync(User).Result.IsAdmin())
-            {
-                return RedirectToPage("/Account/AccessDenied", new {area = "Identity"});
-            }
-
-            int currentSchoolYear = DateTime.Now.Year;
-
-            if(new DateTime(currentSchoolYear, 6, 7) > DateTime.Now)
-            {
-                currentSchoolYear -= 1;
-            }
-
-            var hours = await context.ServiceHours.ToListAsync();
+            var hoursRequest = await hoursManager.RequestReadAllHours(User);
+            if(!hoursRequest.IsValid) return RedirectForInvalidRequest(hoursRequest.ValidationStatus);
+            var hours = hoursRequest.Result.ToList();
 
             var model = new List<double>(4);
 
             for(int i = 1; i < quarters.Count; i++)
             {
-                var total = (from entry in hours where entry.DateOfActivity >= quarters[i - 1] && entry.DateOfActivity < quarters[i] select entry.Hours)
+                double total = (from entry in hours where entry.DateOfActivity >= quarters[i - 1] && entry.DateOfActivity < quarters[i] select entry.Hours)
                     .Sum();
                 model.Add(total);
             }
 
-            ViewData["Year"] = currentSchoolYear;
+            ViewData["Year"] = HoursManager.CurrentSchoolYear;
 
             return View(model);
         }
 
         public async Task<IActionResult> MonthlyTotals()
         {
-            if(!signInManager.IsSignedIn(User))
-            {
-                return RedirectToPage("/Account/Login", new {area = "Identity"});
-            }
+            var hoursRequest = await hoursManager.RequestReadAllHours(User);
+            if(!hoursRequest.IsValid) return RedirectForInvalidRequest(hoursRequest.ValidationStatus);
+            var hours = hoursRequest.Result.ToList();
 
-            if(!userManager.GetUserAsync(User).Result.IsAdmin())
-            {
-                return RedirectToPage("/Account/AccessDenied", new {area = "Identity"});
-            }
-
-            var hours = await context.ServiceHours.ToListAsync();
-
-            var beginning = new DateTime(2018, 6, 1);
+            var beginning = new DateTime(HoursManager.CurrentSchoolYear, 6, 1);
 
             var model = new Dictionary<DateTime, double>();
 
-            while(beginning < DateTime.Today)
+            while(beginning < new DateTime(HoursManager.CurrentSchoolYear + 1, 6, 1))
             {
                 var tempBeginning = beginning;
                 var nextMonth = beginning.AddMonths(1);
 
-                var total = (from entry in hours where entry.DateOfActivity >= tempBeginning && entry.DateOfActivity < nextMonth select entry.Hours)
+                double total = (from entry in hours where entry.DateOfActivity >= tempBeginning && entry.DateOfActivity < nextMonth select entry.Hours)
                     .Sum();
 
                 model.Add(beginning, total);
@@ -118,19 +100,11 @@ namespace WahsKeyClubSite.Controllers
 
         public async Task<IActionResult> UserTotals()
         {
-            if(!signInManager.IsSignedIn(User))
-            {
-                return RedirectToPage("/Account/Login", new {area = "Identity"});
-            }
-
-            if(!userManager.GetUserAsync(User).Result.IsAdmin())
-            {
-                return RedirectToPage("/Account/AccessDenied", new {area = "Identity"});
-            }
-
-            var hours = await context.ServiceHours.ToListAsync();
+            var hoursRequest = await hoursManager.RequestReadAllHours(User);
+            if(!hoursRequest.IsValid) return RedirectForInvalidRequest(hoursRequest.ValidationStatus);
+            var hours = hoursRequest.Result.ToList();
+            
             var totalHours = new Dictionary<User, double>(userManager.Users.Count());
-
             foreach(var user in userManager.Users)
             {
                 totalHours.Add(user, (from entry in hours where entry.UserId == user.Id select entry.Hours).Sum());
@@ -141,11 +115,6 @@ namespace WahsKeyClubSite.Controllers
 
         public async Task<IActionResult> UserQuarterlyTotals(string id)
         {
-            if(!signInManager.IsSignedIn(User))
-            {
-                return RedirectToPage("/Account/Login", new {area = "Identity"});
-            }
-
             string userId = id ?? userManager.GetUserAsync(User).Result.Id;
 
             ViewData["UserID"] = userId;
@@ -178,17 +147,13 @@ namespace WahsKeyClubSite.Controllers
                 model.Add(total);
             }
 
-            ViewData["Year"] = 2018;
+            ViewData["Year"] = HoursManager.CurrentSchoolYear;
 
             return View(model);
         }
 
         public async Task<IActionResult> UserMonthlyTotals(string id)
         {
-            if(!signInManager.IsSignedIn(User))
-            {
-                return RedirectToPage("/Account/Login", new {area = "Identity"});
-            }
 
             string userId = id ?? userManager.GetUserAsync(User).Result.Id;
 
@@ -213,7 +178,7 @@ namespace WahsKeyClubSite.Controllers
 
             var hours = (from entry in await context.ServiceHours.ToListAsync() where entry.UserId == userId select entry).ToList();
 
-            var beginning = new DateTime(2018, 6, 1);
+            var beginning = new DateTime(HoursManager.CurrentSchoolYear, 6, 1);
 
             var model = new Dictionary<DateTime, double>();
 
@@ -222,7 +187,7 @@ namespace WahsKeyClubSite.Controllers
                 var tempBeginning = beginning;
                 var nextMonth = beginning.AddMonths(1);
 
-                var total = (from entry in hours where entry.DateOfActivity >= tempBeginning && entry.DateOfActivity < nextMonth select entry.Hours)
+                double total = (from entry in hours where entry.DateOfActivity >= tempBeginning && entry.DateOfActivity < nextMonth select entry.Hours)
                     .Sum();
 
                 model.Add(beginning, total);
@@ -277,17 +242,25 @@ namespace WahsKeyClubSite.Controllers
                 return RedirectToPage("/Account/AccessDenied", new {area = "Identity"});
             }
 
-            return View(await context.ServiceHours.ToListAsync());
+            var list = await context.ServiceHours.ToListAsync();
+            Console.WriteLine(list.Count);
+            const int max = 100;
+            if(list.Count > max)
+            {
+                list = list.GetRange(list.Count - max, max);
+            }
+
+            return View(list);
         }
 
-        public IActionResult Edit(DateTime date, double hours, string name)
+        public IActionResult Edit(DateTime theDate, double hours, string name)
         {
             if(!signInManager.IsSignedIn(User))
             {
                 return RedirectToPage("/Account/Login", new {area = "Identity"});
             }
 
-            ViewData["Date"] = date.ToString("yyyy-MM-dd");
+            ViewData["Date"] = theDate.ToString("yyyy-MM-dd");
             ViewData["Hours"] = hours;
             ViewData["Name"] = name;
 

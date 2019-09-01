@@ -1,0 +1,16 @@
+@using Microsoft.AspNetCore.Identity
+@using WahsKeyClubSite.Areas.Identity.Data
+@model WahsKeyClubSite.Areas.Identity.Data.User
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Update Users";
+}
+
+<h3>Are you sure you want to advance the grade of every user and delete all accounts that were previously seniors? This action is irreversible, but hours will be saved.</h3>
+<div>
+    <form asp-action="Advance">
+        <input type="submit" value="Advance" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

@@ -20,7 +20,7 @@ namespace WahsKeyClubSite.Areas.Identity.Data
         Junior = 2,
         Senior = 3
     }
-    
+
     public class User : IdentityUser
     {
         [PersonalData]
@@ -28,17 +28,32 @@ namespace WahsKeyClubSite.Areas.Identity.Data
 
         [PersonalData]
         public AccountType AccountType { get; set; } = AccountType.Member;
-        
+
         [PersonalData]
         public string Name { get; set; }
-        
+
         [PersonalData]
         public Grade Grade { get; set; }
-        
+
         public bool IsMember() => !IsAdmin();
 
         public bool IsAdmin() => AccountType == AccountType.Admin || AccountType == AccountType.Developer;
 
         public bool IsDeveloper() => AccountType == AccountType.Developer;
+
+        public bool IsQualified(AccountType qualificationLevel)
+        {
+            switch(qualificationLevel)
+            {
+                case AccountType.Member:
+                    return true;
+                case AccountType.Admin:
+                    return IsAdmin();
+                case AccountType.Developer:
+                    return IsDeveloper();
+                default:
+                    return false;
+            }
+        }
     }
 }
